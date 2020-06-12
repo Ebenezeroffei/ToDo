@@ -1,0 +1,57 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+	<link rel="stylesheet" href="{% static 'app\bootstrap.min.css' %}" type="text/css"/>
+	<style>
+		body{
+			background-image:linear-gradient(45deg,pink,indigo,yellow);
+			background-attachment:cover;
+			background-position:left;
+			background-size:3000px 3000px;
+			background-repeat:no-repeat;
+/*			animation:slide 5s ease alternate forwards infinite;*/
+		}
+		@keyframes slide{
+			from{
+				background-position:left;
+			}
+			to{
+				background-position:right;
+			}
+		}
+		input[type = 'submit'], #reset-signin{
+			color:white;
+			background-image:linear-gradient(45deg,pink,indigo,yellow);
+			background-attachment:cover;
+			background-position:left;
+			background-size:1000px 1000px;
+			background-repeat:no-repeat;
+			animation:slide 5s ease alternate forwards infinite;
+			width:100%;
+			padding:5px 0px;
+			font:20px sans-serif;
+			border-radius:5px;
+			border:thin solid #535353;
+			margin-bottom:5px;
+		}
+		input[type = 'submit']:hover, #reset-signin:hover{
+			box-shadow:0px 2px 5px rgba(0,0,0,.5);
+			text-decoration:none;
+		}
+	</style>
+	{% block head  %}
+	{% endblock %}
+</head>
+<body>
+	{% block content %}
+	{% endblock %}
+	<script type="text/javascript" src="{% static 'app/jquery.js' %}"></script>
+	<script type="text/javascript" src="{% static 'app/bootstrap.bundle.min.js' %}"></script>
+	{% block javascript %}
+	{% endblock %}
+</body>
+</html>

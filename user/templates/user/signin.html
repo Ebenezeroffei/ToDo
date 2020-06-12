@@ -1,0 +1,47 @@
+{% extends 'user/base.html' %}
+
+
+{% block head %}
+	<title>Sign In</title>
+{% endblock %}
+{% block content %}
+	<div class="container">
+		<div class="card border-0" style="max-width:400px;margin:50px auto auto auto;">
+			<div class="card-header bg-dark text-light text-center">
+				To-Do
+			</div>
+			<div class="card-body">
+				{% if messages %}
+					{% for message in messages %}
+						<p class="alert alert-success">{{message}}</p>
+					{% endfor %}
+				{% endif %}
+				<form action="." method="post">
+					{% csrf_token %}
+					{% if form.non_field_errors %}
+						{% for error in form.non_field_errors %}
+							<p class="text-left small text-danger">{{ error }}</p>
+						{% endfor %}
+					{% endif %}
+					<div class="form-group">
+						{{form.username.label_tag}}
+						{{form.username}}
+					</div>
+					<div class="form-group">
+						{{form.password.label_tag}}
+						{{form.password}}
+					</div>
+					<p class="small text-right"><a href="{% url 'password_reset' %}">Forgot Password</a></p>
+					<input type="submit" value="Sign In">
+					<p class="small text-center text-muted">Need An Account? <a href="{% url 'user:signup' %}">Sign Up</a></p>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block javascript %}
+	<script type="text/javascript">
+		// Sign In	
+		$('#id_username, #id_password').attr('class','form-control')
+	</script>
+{% endblock %}

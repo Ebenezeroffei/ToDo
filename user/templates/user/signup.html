@@ -1,0 +1,59 @@
+{% extends 'user/base.html' %}
+
+
+{% block head %}
+	<title>Sign Up</title>
+{% endblock %}
+{% block content %}
+	<div class="container">
+		<div class="card border-0" style = 'max-width:400px;margin:10px auto;'>
+			<div class="bg-dark text-light text-center card-header">
+				To-Do
+			</div>
+			<div class="card-body">
+				<form action="." method="post">
+					{% csrf_token %}
+					<div class="form-group">
+						{{form.username.label_tag}}
+						{{form.username}}
+						{% if form.username.errors %}
+							{% for error in form.username.errors %}
+								<p class="text-danger small">{{error}}</p>
+							{% endfor %}
+						{% endif %}
+					</div>
+					<div class="form-group">
+						{{form.email.label_tag}}
+						{{form.email}}
+						{% if form.email.errors %}
+							{% for error in form.email.errors %}
+								<p class="text-danger small">{{error}}</p>
+							{% endfor %}
+						{% endif %}
+					</div>
+					<div class="form-group">
+						{{form.password1.label_tag}}
+						{{form.password1}}
+					</div>
+					<div class="form-group">
+						{{form.password2.label_tag}}
+						{{form.password2}}
+						{% if form.password2.errors %}
+							{% for error in form.password2.errors %}
+								<p class="text-danger mb-1 small">{{error}}</p>
+							{% endfor %}
+						{% endif %}
+					</div>
+					<input type="submit" value="Sign Up">
+					<p class="text-center small">Already Have An Account? <a href="{% url 'user:signin' %}">Sign In</a></p>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block javascript %}
+	<script type="text/javascript">
+		// Inject boostrap into the form 
+		$('#id_password1, #id_password2').attr('class','form-control form-control-sm')
+	</script>
+{% endblock %}
