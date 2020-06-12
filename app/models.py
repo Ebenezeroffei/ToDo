@@ -8,7 +8,8 @@ class Task(models.Model):
 	user = models.ForeignKey(User,on_delete = models.CASCADE)
 	task = models.CharField(max_length = 200)
 	completed_by = models.DateTimeField()
-	task_completed = models.BooleanField(default = False) 
+	completes_on = models.DateTimeField(null = True)
+	task_completed = models.BooleanField(default = False)
 	
 	def __str__(self):
 		return f'{self.user.username} - {self.task}'

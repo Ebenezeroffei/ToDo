@@ -1,4 +1,5 @@
 {% extends 'app/base.html' %}
+{% load static %}
 
 
 {% block head %}
@@ -19,7 +20,7 @@
 					<label for="id_date_completed">Completed By:</label>
 					<div class="row">
 						<div class="col-6">
-							<input min="2020-6-11" type="date" id="id_date" class="form-control">
+							<input type="date" id="id_date" class="form-control">
 						</div>
 						<div class="col-6">
 							<input type="time" id = 'id_time' class="form-control">
@@ -37,17 +38,17 @@
 		<!-- Tasks In Progress -->
 		<div class="card border-primary">
 			<div class="card-header bg-primary text-light">
-				Tasks In Progress <span class="badge badge-light">0</span>
+				Tasks In Progress <span id="tasks-in-progress-count" class="badge badge-light">0</span>
 			</div>
-			<div class="card-body">
+			<div id="tasks-in-progress-container" class="card-body p-0">
 				{% if tasks_in_progress %}
-					<ul class="list-group">
+					<ul id="tasks-in-progress" class="list-group">
 						{% for task in tasks_in_progress %}
 							<li class="list-group-item">{{ task }}</li>
 						{% endfor %}
 					</ul>
 				{% else %}
-					<p class="text-center text-muted lead">No Tasks In Progress</p>
+					<p id="no-task-in-progress" class="text-center text-muted lead">No Tasks In Progress</p>
 				{% endif %}
 			</div>
 		</div>
@@ -56,7 +57,7 @@
 			<div class="card-header bg-success text-light">
 				Completed Tasks <span class="badge badge-light">0</span>
 			</div>
-			<div class="card-body">
+			<div class="card-body p-0">
 				{% if completed_tasks %}
 					<ul class="list-group">
 						{% for task in completed_tasks %}
@@ -64,7 +65,7 @@
 						{% endfor %}
 					</ul>
 				{% else %}
-					<p class="text-center text-muted lead">No Completed Tasks</p>
+					<p class="text-center mt-2 text-muted lead">No Completed Tasks</p>
 				{% endif %}
 			</div>
 		</div>
@@ -73,7 +74,7 @@
 			<div class="card-header bg-danger text-light">
 				Uncompleted Tasks <span class="badge badge-light">0</span>
 			</div>
-			<div class="card-body">
+			<div class="card-body p-0">
 				{% if uncompleted_tasks %}
 					<ul class="list-group">
 						{% for task in uncompleted_tasks %}
@@ -81,57 +82,15 @@
 						{% endfor %}
 					</ul>
 				{% else %}
-					<p class="text-center text-muted lead">No Uncompleted Task</p>
+					<p class="text-center text-muted mt-2 lead">No Uncompleted Task</p>
 				{% endif %}
 			</div>
 		</div>
 	</div>
 {% endblock %}
 {% block javascript %}
+	<script type="text/javascript" src = "{% static 'app/scripts.js' %}"></script>
 	<script>
-		// Function that adds a task to the users To-Do list
-		let addTask = () => {
-			$('#add').click(function(){
-				let task = $('#id_task');
-				let date = $('#id_date');
-				let time = $('#id_time');
-				let taskError = $('#error_task');
-				let dateCompletedError = $('#error_date_completed')
-				if(task.val() && date.val() && time.val()){
-					// Make an ajax request
-					$.ajax({
-						url: "{% url 'app:add_task' %}",
-						data: {
-							'task': task.val(),
-							'date': date.val(),
-							'time': time.val(),
-						},
-						dataType: 'json',
-						success: function(data){
-							console.log("Good");
-							// Clear the errors and fields
-							task.val('');
-							date.val('');
-							time.val('');
-							taskError.text('');
-							dateCompletedError.text('');
-						}
-					});
-				}
-				else if(!task.val() && (date.val() || time.val())){
-					taskError.text('You must specify the task you want to complete.');
-					dateCompletedError.text('');
-				}
-				else if(task.val() && (!date.val() || !time.val())){
-					dateCompletedError.text('You must specify the date and time you want to complete the task');
-					taskError.text('');
-				}
-				else{
-					taskError.text('You must specify the task you want to complete.');
-					dateCompletedError.text('You must specify the date and time you want to complete the task');
-				}
-			});
-		} 
-		addTask() // Invoke function
+		addTask("{% url 'app:add_task' %}") // Invoke function
 	</script>
 {% endblock %}
