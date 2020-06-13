@@ -35,8 +35,8 @@ let addTask = (url) => {
 									<span class="text-muted small">Completed By: ${futureDateTime.toUTCString()}</span>
 								</div>
 								<div class="d-flex align-items-center">
-									<button class = 'btn btn-sm btn-success mr-1 complete'>Complete</button>
-									<button class = 'btn btn-sm btn-danger'>Delete</button>
+									<button id = "${data['task_id']}" class = 'btn btn-sm btn-success mr-1 complete'>Complete</button>
+									<button id = "${data['task_id']}" class = 'btn btn-sm btn-danger'>Delete</button>
 								</div>
 							</li>`
 						);
@@ -57,8 +57,8 @@ let addTask = (url) => {
 										<span class="text-muted small">Completed By: ${futureDateTime.toUTCString()}</span>
 									</div>
 									<div class="d-flex align-items-center">
-										<button class = 'btn btn-sm btn-success mr-1 complete'>Complete</button>
-										<button class = 'btn btn-sm btn-danger'>Delete</button>
+										<button id = "${data['task_id']}" class = 'btn btn-sm btn-success mr-1 complete'>Complete</button>
+										<button id = "${data['task_id']}" class = 'btn btn-sm btn-danger'>Delete</button>
 									</div>
 								</li>
 							</ul>`
@@ -72,7 +72,8 @@ let addTask = (url) => {
 					time.val('');
 					taskError.text('');
 					dateCompletedError.text('');
-					$('.complete').last().click(go);
+					// Add an event to the element's complete button
+					$('.complete').last().click(completeTask);
 				}
 			});
 		}
@@ -93,5 +94,78 @@ let addTask = (url) => {
 
 // A function that send a task in the task in progress container to the completed tasks container
 function completeTask(){
+	// Get the id of the task
+	let taskId = $(this).attr('id');
+//	console.log(taskId);
+	let index = $('.complete').index(this);
+	// Make an ajax request that will make the task completed
+	$.ajax({
+		url: 'http://localhost:8000/task/completed/',
+		data: {
+			taskId
+		},
+		dataType: 'json',
+		success: function(data){
+			// Remove the task from the task in progress container
+			$('#tasks-in-progress .list-group-item').eq(index).slideUp(function(){
+				$(this).remove();
+				// Get the number of completed tasks
+				let completedTasksCount = $('#completed-tasks-count');
+				// This is not the first completed task
+				if(Number(completedTasksCount.text()) > 0){
+					// Get the completed task list and add a new completed task
+					$('#completed-tasks').append(
+						`<li class="list-group-item p-1 d-flex justify-content-between">
+							<div>
+								${data["action"]}<br/>
+								<span class="text-muted small">Completed On: ${data["completed_on"]}</span>
+							</div>
+							<div class="d-flex align-items-center">
+								<button id = "${data['task_id']}" class = 'btn btn-sm btn-danger'>Delete</button>
+							</div>
+						</li>`
+					);
+				}
+				// This is the first completed task
+				else{
+					// Remove the default message when there is no completed task
+					$('#no-completed-task').slideUp(function(){
+						$(this).remove();
+					});
+					// Get the completed task comtainer and add a new completed task
+					$('#completed-tasks-container').append(
+						`<ul id="completed-tasks" class="list-group list-group-flush">
+							<li class="list-group-item p-1 d-flex justify-content-between">
+								<div>
+									${data['action']}<br/>
+									<span class="text-muted small">Completed On: ${data['completed_on']}</span>
+								</div>
+								<div class="d-flex align-items-center">
+									<button id = "${data['task_id']}" class = 'btn btn-sm btn-danger'>Delete</button>
+								</div>
+							</li>
+						</ul>`
+					);
+				}
+				// Check if the task when removed will make the task in progress container empty
+				let tasksInProgressCount = $('#tasks-in-progress-count');
+				if(Number(tasksInProgressCount.text()) - 1 == 0){
+					// Remove the list containing the tasks in progress
+					$('#tasks-in-progress').remove();
+					// Add the default message when there is no task in progress
+					$('#tasks-in-progress-container').append(
+						`<p id="no-task-in-progress" class="text-center text-muted lead">No Tasks In Progress</p>`
+					);
+				}
+				// Decrease the tasks in progress count
+				tasksInProgressCount.text(`${Number(tasksInProgressCount.text()) - 1}`);
+				// Increase the completed tasks count
+				completedTasksCount.text(`${Number(completedTasksCount.text()) + 1}`);
+			});
+		}
+	}); 
 	
 }
+
+// Invoke the function on every element which has a complete class
+$('.complete').click(completeTask);
