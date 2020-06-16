@@ -14,13 +14,18 @@ class HomePageView(LoginRequiredMixin,generic.ListView):
 	template_name = 'app/index.html'
 	
 	def get_queryset(self,*args,**kwargs):
-		return [task for task in Task.objects.filter(user = self.request.user) if not task.task_completed]
+		return [task for task in Task.objects.filter(user = self.request.user) if not task.task_completed and not task.is_uncompleted()]
 	
 	def get_context_data(self,*args,**kwargs):
 		context = super().get_context_data(*args,**kwargs)
+		# Tasks in progress
 		context['tasks_in_progress_total'] = len(context['tasks_in_progress'])
+		# Completed Tasks
 		context['completed_tasks'] = [task for task in Task.objects.filter(user = self.request.user) if task.task_completed]
 		context['completed_tasks_total'] = len(context['completed_tasks'])
+		# Uncompleted Tasks
+		context['uncompleted_tasks'] = [task for task in Task.objects.filter(user = self.request.user) if task.is_uncompleted() ]
+		context['uncompleted_tasks_total'] = len(context['uncompleted_tasks'])
 		return context
 	
 class AddTaskView(LoginRequiredMixin,generic.View):
@@ -64,6 +69,17 @@ class CompletedTaskView(LoginRequiredMixin,generic.View):
 			'completed_on': task.completed_on,
 			'task_id': task.id
 		}
+		
+		return JsonResponse(data)
+	
+class DeleteTaskView(LoginRequiredMixin,generic.View):
+	""" This function deletes a task from the users list of todo items """
+	
+	def get(self,request,*args,**kwargs):
+		task_id = int(request.GET.get('taskId')) # Get task id
+		task = get_object_or_404(Task,id = task_id) # Get the task
+		task.delete() # Delete the task
+		data = {}
 		
 		return JsonResponse(data)
 		

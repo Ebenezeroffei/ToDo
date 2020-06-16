@@ -51,13 +51,13 @@
 								</div>
 								<div class="d-flex align-items-center">
 									<button id = "{{task.id}}" class = 'btn btn-sm btn-success mr-1 complete'>Complete</button>
-									<button id = "{{task.id}}" class = 'btn btn-sm btn-danger'>Delete</button>
+									<button id = "{{task.id}}" class = 'btn btn-sm btn-danger delete'>Delete</button>
 								</div>
 							</li>
 						{% endfor %}
 					</ul>
 				{% else %}
-					<p id="no-task-in-progress" class="text-center text-muted lead">No Tasks In Progress</p>
+					<p id="no-task-in-progress" class="text-center text-muted mt-2 lead">No Tasks In Progress</p>
 				{% endif %}
 			</div>
 		</div>
@@ -73,10 +73,10 @@
 							<li class="list-group-item p-1 d-flex justify-content-between">
 								<div>
 									{{task.action}}<br/>
-									<span class="text-muted small">Completed By: {{task.completed_by|date:''}}</span>
+									<span class="text-muted small">Completed On: {{task.completed_on|date:''}}</span>
 								</div>
 								<div class="d-flex align-items-center">
-									<button id = "{{task.id}}" class = 'btn btn-sm btn-danger'>Delete</button>
+									<button id = "{{task.id}}" class = 'btn btn-sm btn-danger delete'>Delete</button>
 								</div>
 							</li>
 						{% endfor %}
@@ -89,17 +89,25 @@
 		<!-- Uncompleted Tasks -->
 		<div class="card mt-3 border-danger">
 			<div class="card-header bg-danger text-light">
-				Uncompleted Tasks <span class="badge badge-light">0</span>
+				Uncompleted Tasks <span id = 'uncompleted-tasks-count' class="badge badge-light">{{ uncompleted_tasks_total }}</span>
 			</div>
-			<div class="card-body p-0">
+			<div id="uncompleted-tasks-container" class="card-body p-0">
 				{% if uncompleted_tasks %}
-					<ul class="list-group">
+					<ul id="uncompleted-tasks" class="list-group">
 						{% for task in uncompleted_tasks %}
-							<li class="list-group-item">{{ task }}</li>
+							<li class="list-group-item p-1 d-flex justify-content-between">
+								<div>
+									{{task.action}}<br/>
+									<span class="text-muted small">Completed By: {{task.completed_by|date:''}}</span>
+								</div>
+								<div class="d-flex align-items-center">
+									<button id = "{{task.id}}" class = 'btn btn-sm btn-danger delete'>Delete</button>
+								</div>
+							</li>
 						{% endfor %}
 					</ul>
 				{% else %}
-					<p class="text-center text-muted mt-2 lead">No Uncompleted Task</p>
+					<p id="no-uncompleted-task" class="text-center text-muted mt-2 lead">No Uncompleted Task</p>
 				{% endif %}
 			</div>
 		</div>

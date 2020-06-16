@@ -17,4 +17,4 @@ class Task(models.Model):
 	
 	def is_uncompleted(self):
 		""" This checks if a task is in progress or in uncomplete """
-		return self.completed_by > timezone.now() and not self.task_completed
+		return timezone.now() > self.completed_by

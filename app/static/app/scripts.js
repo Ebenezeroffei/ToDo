@@ -28,6 +28,7 @@ let addTask = (url) => {
 					let tasksInProgressCount = $('#tasks-in-progress-count');
 					// A task is already present
 					if(Number(tasksInProgressCount.text()) > 0){
+						console.log("I am more than one");
 						$('#tasks-in-progress').append(
 							`<li class="list-group-item p-1 d-flex justify-content-between">
 								<div>
@@ -36,7 +37,7 @@ let addTask = (url) => {
 								</div>
 								<div class="d-flex align-items-center">
 									<button id = "${data['task_id']}" class = 'btn btn-sm btn-success mr-1 complete'>Complete</button>
-									<button id = "${data['task_id']}" class = 'btn btn-sm btn-danger'>Delete</button>
+									<button id = "${data['task_id']}" class = 'btn btn-sm btn-danger delete'>Delete</button>
 								</div>
 							</li>`
 						);
@@ -44,6 +45,7 @@ let addTask = (url) => {
 					}
 					// This is a new task 
 					else{
+						console.log("I am less than one")
 						$('#no-task-in-progress').slideUp(function(){
 								$(this).remove();	
 							}
@@ -58,7 +60,7 @@ let addTask = (url) => {
 									</div>
 									<div class="d-flex align-items-center">
 										<button id = "${data['task_id']}" class = 'btn btn-sm btn-success mr-1 complete'>Complete</button>
-										<button id = "${data['task_id']}" class = 'btn btn-sm btn-danger'>Delete</button>
+										<button id = "${data['task_id']}" class = 'btn btn-sm btn-danger delete'>Delete</button>
 									</div>
 								</li>
 							</ul>`
@@ -74,6 +76,8 @@ let addTask = (url) => {
 					dateCompletedError.text('');
 					// Add an event to the element's complete button
 					$('.complete').last().click(completeTask);
+					// Add an event to the element's delete button
+					$('#tasks-in-progress .delete').last().click(deleteTask);
 				}
 			});
 		}
@@ -121,7 +125,7 @@ function completeTask(){
 								<span class="text-muted small">Completed On: ${data["completed_on"]}</span>
 							</div>
 							<div class="d-flex align-items-center">
-								<button id = "${data['task_id']}" class = 'btn btn-sm btn-danger'>Delete</button>
+								<button id = "${data['task_id']}" class = 'btn btn-sm btn-danger delete'>Delete</button>
 							</div>
 						</li>`
 					);
@@ -141,7 +145,7 @@ function completeTask(){
 									<span class="text-muted small">Completed On: ${data['completed_on']}</span>
 								</div>
 								<div class="d-flex align-items-center">
-									<button id = "${data['task_id']}" class = 'btn btn-sm btn-danger'>Delete</button>
+									<button id = "${data['task_id']}" class = 'btn btn-sm btn-danger delete'>Delete</button>
 								</div>
 							</li>
 						</ul>`
@@ -161,7 +165,9 @@ function completeTask(){
 				tasksInProgressCount.text(`${Number(tasksInProgressCount.text()) - 1}`);
 				// Increase the completed tasks count
 				completedTasksCount.text(`${Number(completedTasksCount.text()) + 1}`);
-			});
+				// Add an event to the element's delete button
+				$('#completed-tasks .delete').last().click(deleteTask);
+		});
 		}
 	}); 
 	
@@ -169,3 +175,41 @@ function completeTask(){
 
 // Invoke the function on every element which has a complete class
 $('.complete').click(completeTask);
+
+// A function that deletes a task
+function deleteTask(){
+	let taskId = $(this).attr('id');
+	let task = $(this);
+	// Make an ajax request that will delete the task
+	$.ajax({
+		url: 'http://localhost:8000/task/delete/',
+		data: {
+			taskId,
+		},
+		dataType: 'json',
+		success: function(){
+			task.parent().parent().slideUp(function(){
+				// Get the number of tasks
+				let taskCount = $(this).parent().parent().parent().find('div.card-header span.badge');
+				// Get the type of task
+				let taskType = $(this).parent().parent().parent().find('div.card-header').text().split(' ')
+				taskType.pop();
+				// The task beign deleted is the last task in the type of task
+				if(Number(taskCount.text()) - 1 == 0){
+					// Get the tasks list and remove it
+					$(`#${taskType.join('-').trim().toLowerCase()}`).remove()
+					// Get the task type container 
+					$(`#${taskType.join('-').trim().toLowerCase()}-container`).append(
+						`<p id = 'no-task-in-progress' class="text-center text-muted mt-2 lead">No ${taskType.join(' ').trim()}</p>`
+					); // Give it the default message when there is no task
+				}
+				// Decrease the task count
+				taskCount.text(`${Number(taskCount.text()) - 1}`);
+				// Remove the task
+				$(this).remove();
+			});
+		}
+	});
+}
+// Invoke the function on all elements that have a class of delete
+$('.delete').click(deleteTask);
