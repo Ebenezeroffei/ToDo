@@ -18,3 +18,7 @@ class Task(models.Model):
 	def is_uncompleted(self):
 		""" This checks if a task is in progress or in uncomplete """
 		return timezone.now() > self.completed_by
+	
+	def close_to_deadline(self):
+		""" Returns an object which shows the number of seconds left for a task's deadline to reach """
+		return self.completed_by - timezone.now()

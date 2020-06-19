@@ -42,7 +42,7 @@ class AddTaskView(LoginRequiredMixin,generic.View):
 		# Create and save task into the database
 		new_task =  Task(
 			user = request.user,
-			action = task,
+			action = task.capitalize(),
 			completed_by = date_time
 		)
 		new_task.save()
@@ -82,4 +82,30 @@ class DeleteTaskView(LoginRequiredMixin,generic.View):
 		data = {}
 		
 		return JsonResponse(data)
+	
+class GetTaskDeadlinesView(generic.View):
+	""" This class gets all tasks in progres that have a deadline less than an hour """
+	
+	def get(self,request,*args,**kwargs):
+		# Get all tasks in progress
+		tasks_in_progress = [task for task in Task.objects.filter(user = request.user) if not task.task_completed and not task.is_uncompleted()]
+		data = {i.id:i.close_to_deadline().seconds for i in tasks_in_progress if i.close_to_deadline().seconds <= 3600 and i.close_to_deadline().days == 0 }
+		
+		return JsonResponse(data)
+	
+class UncompletedTaskDetailsView(generic.View):
+	""" This class gives details of an uncompleted task such as its task, date completed etc """
+	
+	def get(self,request,*args,**kwargs):
+		task_id = int(request.GET.get('taskId')) # Get task id
+		task  = get_object_or_404(Task,id = task_id) # Get task
+		
+		data = {
+			'action': task.action,
+			'completed_by': task.completed_by
+		}
+		
+		return JsonResponse(data)
+								  
+		
 		

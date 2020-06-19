@@ -20,7 +20,7 @@
 			<a href="{% url 'app:home' %}" class="navbar-brand fixed"><h4>To-Do</h4></a>
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item active">
-					<a href="" class="nav-link">
+					<a href="{% url 'user:profile' %}" class="nav-link">
 						<img style = 'width:40px;height:40px' class="rounded-circle border p-1" src="{% static 'app/images/defaultAvatar.png' %}" alt="">
 						{% if user.is_authenticated %}
 							Hi {{ user.username }}
