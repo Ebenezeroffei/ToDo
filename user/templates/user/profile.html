@@ -7,27 +7,28 @@
 {% endblock %}
 {% block content %}
 	<div class="container" style="margin-top:160px;">
-		<div class="card" style = 'max-width:600px;margin:auto;'>
+		<div class="card border-secondary" style = 'max-width:600px;margin:auto;'>
 			<div class="card-header bg-dark text-light text-center">
 				Profile
 			</div>
 			<div class="card-body">
 				<div class="row">
 					<div class="col-sm-5 col-12 d-flex align-items-center text-center">
-						<img style="width:200px;height:200px;" class="rounded-circle p-2 bg-dark" src="{% static 'app/images/defaultAvatar.png' %}" alt="Avatar">
+						<img style="width:200px;height:200px;" class="rounded-circle p-2 bg-dark" src="{{ user.useravatar.image.url }}" alt="Avatar">
 					</div>
 					<div class="col-sm-7 col-12">
-						<h5 style = 'margin:auto;' class="text-muted text-center">User Details</h5><hr/>
-						<p style = 'margin:auto;' class="lead">First Name: <span class="text-info">{{user.first_name}}</span></p>
-						<p style = 'margin:auto;' class="lead">Last Name: <span class="text-info">{{user.last_name}}</span></p>
-						<p style = 'margin:auto;' class="lead">Username: <span class="text-info">{{user.username}}</span></p>
-						<p style = 'margin:auto;' class="lead">Email: <span class="text-info">{{user.email}}</span></p>
-						<h5 style = 'margin:auto;' class="text-muted text-center">Task Details</h5><hr/>
-						<p style = 'margin:auto;' class="lead text-primary">Tasks in Progress: <span></span></p>
-						<p style = 'margin:auto;' class="lead text-success">Completed Tasks: <span></span></p>
-						<p style = 'margin:auto;' class="lead text-danger">Uncompleted Tasks: <span></span></p>
+						<h5 style = 'margin:auto;' class="text-muted text-center">User Details</h5><hr style = 'margin:auto;'/>
+						<p style = 'margin:auto;' class="lead">First Name: <span class="text-info small ">{{user.first_name}}</span></p>
+						<p style = 'margin:auto;' class="lead">Last Name: <span class="text-info small ">{{user.last_name}}</span></p>
+						<p style = 'margin:auto;' class="lead">Username: <span class="text-info small ">{{user.username}}</span></p>
+						<p style = 'margin:auto;' class="lead">Email: <span class="text-info small ">{{user.email}}</span></p>
+						<h5 style = 'margin:auto;' class="text-muted text-center">Task Details</h5><hr style = 'margin:auto;'/>
+						<p style = 'margin:auto;' class="lead text-primary">Tasks in Progress: <span class = ' small text-info' >{{ tasks_in_progress }}</span></p>
+						<p style = 'margin:auto;' class="lead text-success">Completed Tasks: <span class = ' small text-info' >{{ completed_tasks }}</span></p>
+						<p style = 'margin:auto;' class="lead text-danger">Uncompleted Tasks: <span class = ' small text-info' >{{ uncompleted_tasks }}</span></p>
 					</div>
-				</div>
+				</div><hr/>
+				<a href = "{% url 'user:edit_profile' %}" class="btn text-light border-secondary btn-block btn-secondary btn-outline-dark">Edit User Details</a>
 			</div>
 		</div>
 	</div>

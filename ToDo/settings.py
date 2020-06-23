@@ -126,3 +126,6 @@ LOGOUT_REDIRECT_URL = 'user:signin'
 
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 1026
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')

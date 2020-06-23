@@ -228,7 +228,6 @@ $('.delete').click(deleteTask);
 // A function that adds a task in progress to an uncompleted task within an hour
 let closeToDeadline = () => {
 	let deadlines;
-	let secondsCount = 0;
 	// Make an ajax request that will get all the tasks which the deadlines are less than an hour
 	$.ajax({
 		url: 'http://localhost:8000/task/deadlines/',
@@ -236,6 +235,8 @@ let closeToDeadline = () => {
 		dataType: 'json',
 		success: function(data){
 			deadlines = data;
+			// Get the number of tasks close to their deadline
+			let deadlineCount = Number(Object.keys(deadlines).length);
 			if(Object.keys(deadlines).length > 0){
 				let deadlineTimer = setInterval(function(){
 					// Go through every deadline
@@ -243,7 +244,11 @@ let closeToDeadline = () => {
 						if(deadlines[i] - 1 == 0){
 							// Invoke the function that will modify the 		uncompleted tasks section
 							uncompleteTask(i);
-							clearInterval(deadlineTimer);
+							// ALl the tasks has passed their deadlines
+							deadlineCount --;
+							if(deadlineCount == 0){
+								clearInterval(deadlineTimer);
+							}
 						}
 						deadlines[i]--; // Decrease it by a second
 					}
@@ -254,7 +259,6 @@ let closeToDeadline = () => {
 	});
 } 
 
-closeToDeadline() // Invoke the function
 
 // A function that adds a task to the uncompleted tasks section
 let uncompleteTask = (taskId) => {
@@ -263,7 +267,7 @@ let uncompleteTask = (taskId) => {
 	let taskCount = $('#uncompleted-tasks-count');
 	// Make an ajax request that will get the details of a task using its id
 	$.ajax({
-		url: '',
+		url: "http://localhost:8000/task/uncompleted/",
 		data: {
 			taskId
 		},
@@ -274,7 +278,7 @@ let uncompleteTask = (taskId) => {
 				$(this).remove()
 				let taskInProgressCount = $('#tasks-in-progress-count');
 				// Check if there is only one task in the task in progress section
-				if(Number(taskInProgress.text()) === 1){
+				if(Number(taskInProgressCount.text()) === 1){
 					$('#tasks-in-progress').remove();
 					$('#tasks-in-progress-container').append(
 						`<p id="no-task-in-progress" class="text-center text-muted mt-2 lead">No Tasks In Progress</p>`
@@ -285,6 +289,7 @@ let uncompleteTask = (taskId) => {
 			});
 			// An uncompleted task is already present
 			if(Number(taskCount.text()) > 0){
+				console.log('I am not the first one');
 				$('#uncompleted-tasks').append(
 					`<li class="list-group-item p-1 d-flex justify-content-between">
 						<div>
@@ -299,6 +304,11 @@ let uncompleteTask = (taskId) => {
 			}
 			// This is the first uncompleted task
 			else{
+				console.log('I am the first one');
+				// Remove the default message when there is no uncompleted task
+				$('#no-uncompleted-task').slideUp(function(){
+					$(this).remove();
+				})
 				$('#uncompleted-tasks-container').append(
 					`<ul class = 'list-group' id = 'uncompleted-tasks'>
 						<li class="list-group-item p-1 d-flex justify-content-between">
@@ -320,3 +330,5 @@ let uncompleteTask = (taskId) => {
 		}
 	});
 }
+
+closeToDeadline() // Invoke the function

@@ -1,0 +1,57 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block head %}
+	<title>Edit Profile</title>
+{% endblock %}
+{% block content %}
+	<div style="margin-top:180px" class="container-fluid">
+		<div class="row">
+			<div class="col-12 col-sm-8 col-md-9 col-lg-10 order-2 order-sm-1 mt-sm-0 mt-5">
+				<div class="card">
+					<div class="card-header text-center text-light bg-dark">
+						User Details
+					</div>
+					<div class="card-body">
+						<form action="." method="post">
+							{% csrf_token %}
+							{% for field in form %}
+								<div class="form-group">
+									{{field.label_tag}}
+									{% if field.errors %}
+										{% for error in field.errors %}
+											<p class="text-danger small mb-0">{{error}}</p>
+										{% endfor %}
+									{% endif %}
+									{{field}}
+									<p class="text-info small mb-0">{{field.help_text}}</p>
+								</div>
+							{% endfor %}
+							<div style="max-width:400px;margin:auto;">
+								<button class="btn btn-block btn-dark">Save Changes</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-sm-4 col-md-3 col-lg-2 order-1 order-sm-2 ">
+				<div class="card">
+					<div class="card-header text-center text-light bg-dark">Profile Pic</div>
+					<img class="img-top p-2" src="{{ user.useravatar.image.url }}" alt=""><hr style = 'margin:auto;width:100%;'/>
+					<div class="card-body">
+						<div class="input-group input-group-sm">
+						<div class="custom-file">
+							<input class="custom-file-input" type="file" accept="image/*">						
+						</div>
+							<div class="input-group-append">
+								<span class="input-group-text">Browse</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block javascript %}
+{% endblock %}

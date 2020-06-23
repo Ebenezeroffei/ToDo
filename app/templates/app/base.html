@@ -21,7 +21,7 @@
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item active">
 					<a href="{% url 'user:profile' %}" class="nav-link">
-						<img style = 'width:40px;height:40px' class="rounded-circle border p-1" src="{% static 'app/images/defaultAvatar.png' %}" alt="">
+						<img style = 'width:40px;height:40px' class="rounded-circle border p-1" src="{{ user.useravatar.image.url }}" alt="">
 						{% if user.is_authenticated %}
 							Hi {{ user.username }}
 						{% else %}
