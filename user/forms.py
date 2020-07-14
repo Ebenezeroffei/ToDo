@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .models import UserAvatar
 
 class RegisterUserForm(UserCreationForm):
 	""" This class creates a form  """
@@ -37,3 +38,9 @@ class EditUserProfileForm(forms.ModelForm):
 				'class': 'form-control form-control-sm',
 			})
 		}
+        
+class UserAvatarForm(forms.ModelForm):
+    """ This class creates a form for the user to change its profile picture """
+    class Meta:
+        model = UserAvatar
+        fields = ['image']

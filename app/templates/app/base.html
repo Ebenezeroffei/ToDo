@@ -7,6 +7,40 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 	<link rel="stylesheet" href="{% static 'app\bootstrap.min.css' %}" type="text/css"/>
 	<style>
+        nav ul{
+            margin:0;
+            padding:0;
+            list-style:none;
+        }
+        nav a{
+            color:white;
+            padding: 0 5px;
+            line-height:60px;
+        }
+        nav a:hover{
+            color:white;
+        }
+        nav a h4{
+            display:inline-block;
+        }
+        nav ul{
+            float:right;
+        }
+        nav ul li{
+            displaY:inline-block
+        }
+        nav ul li a{
+            color:white;
+            display:block;
+            padding:3px 10px;
+        }
+        nav ul li:first-child{
+            border-right:thin solid lightgray;
+        }
+        nav ul li a:hover{
+            text-decoration:none;
+            color:rgba(255,255,255,.5)
+        }
 		li.nav-item{
 			float:right;
 		}
@@ -16,11 +50,11 @@
 </head>
 <body>
 	<div class="container-fluid">
-		<nav class="navbar fixed-top navbar-dark bg-dark">
-			<a href="{% url 'app:home' %}" class="navbar-brand fixed"><h4>To-Do</h4></a>
-			<ul class="navbar-nav ml-auto">
-				<li class="nav-item active">
-					<a href="{% url 'user:profile' %}" class="nav-link">
+		<nav class="fixed-top navbar-dark bg-dark">
+			<a href="{% url 'app:home' %}"><h4>To-Do</h4></a>
+			<ul>
+				<li class="active">
+					<a href="{% url 'user:profile' %}">
 						<img style = 'width:40px;height:40px' class="rounded-circle border p-1" src="{{ user.useravatar.image.url }}" alt="">
 						{% if user.is_authenticated %}
 							Hi {{ user.username }}
@@ -29,8 +63,8 @@
 						{% endif %}
 					</a>
 				</li>
-				<li class="nav-item">
-					<a href="{% url 'user:logout' %}" class="nav-link">Logout</a>
+				<li>
+					<a href="{% url 'user:logout' %}">Logout</a>
 				</li>
 			</ul>
 		</nav>

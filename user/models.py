@@ -10,6 +10,9 @@ class UserAvatar(models.Model):
 	user = models.OneToOneField(User,on_delete = models.CASCADE)
 	image = models.ImageField(default = 'defaultAvatar.png',upload_to = 'profile_pics')
 	
+#    def __str__(self):
+#        return f"{self.user.username}'s avatar"
+    
 	def save(self):
 		super().save()
 		
@@ -17,3 +20,4 @@ class UserAvatar(models.Model):
 		if img.width > 400 or img.height > 400:
 			img.thumbnail((400,400))
 			img.save(self.image.path)
+    

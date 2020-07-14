@@ -244,9 +244,10 @@ let closeToDeadline = () => {
 						if(deadlines[i] - 1 == 0){
 							// Invoke the function that will modify the 		uncompleted tasks section
 							uncompleteTask(i);
-							// ALl the tasks has passed their deadlines
-							deadlineCount --;
-							if(deadlineCount == 0){
+							// All the tasks has passed their deadlines
+							deadlineCount--;
+                            console.log(deadlineCount)
+							if(deadlineCount === 0){
 								clearInterval(deadlineTimer);
 							}
 						}
